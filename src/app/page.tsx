@@ -20,8 +20,11 @@ export default function Home() {
   return (
     <div>
       <Input
+        id='username'
+        label='이름'
         value={value}
         onChange={handleChange}
+        placeholder="이름을 입력해 주세요."
         onBlur={handleBlur}
         error={errorMessage}
       />

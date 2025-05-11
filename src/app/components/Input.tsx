@@ -8,6 +8,8 @@ type InputProps = {
   type?: string;
   error?: string;
   onBlur?: () => void;
+  label?: string;
+  id?: string;
 };
 
 export default function Input({
@@ -17,6 +19,8 @@ export default function Input({
   type = 'text',
   error,
   onBlur,
+  label,
+  id,
 }: InputProps) {
   const inputClass = clsx(
     'w-full rounded-xl px-4 py-2',
@@ -27,7 +31,13 @@ export default function Input({
 
   return (
     <div>
+      {label && (
+        <label htmlFor={id} className="mb-2 block text-lg font-bold text-gray-700">
+          {label}
+        </label>
+      )}
       <input
+        id={id}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
