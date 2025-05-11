@@ -7,16 +7,17 @@ type InputProps = {
   placeholder?: string;
   type?: string;
   error?: string;
-}
+  onBlur?: () => void;
+};
 
 export default function Input({
   value,
   onChange,
-  placeholder = "",
-  type = "text",
+  placeholder = '',
+  type = 'text',
   error,
+  onBlur,
 }: InputProps) {
-
   const inputClass = clsx(
     'w-full rounded-xl px-4 py-2',
     error
@@ -31,9 +32,10 @@ export default function Input({
         onChange={onChange}
         placeholder={placeholder}
         type={type}
+        onBlur={onBlur}
         className={inputClass}
-        />
-        {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
-      </div>
-    );
+      />
+      {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
+    </div>
+  );
 }
