@@ -5,10 +5,11 @@ import { TabsContext } from './TabsContext';
 
 interface ITabsProps {
   defaultValue?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
-const Tabs = ({ defaultValue, children }: ITabsProps) => {
+const Tabs = ({ defaultValue, className, children }: ITabsProps) => {
   const [tabValue, setTabValue] = useState(defaultValue);
 
   const toggleTabs = (value?: string) => {
@@ -20,7 +21,11 @@ const Tabs = ({ defaultValue, children }: ITabsProps) => {
     toggleTabs,
   };
 
-  return <TabsContext value={TabsValue}>{children}</TabsContext>;
+  return (
+    <TabsContext value={TabsValue}>
+      <div className={className}>{children}</div>
+    </TabsContext>
+  );
 };
 
 export default Tabs;

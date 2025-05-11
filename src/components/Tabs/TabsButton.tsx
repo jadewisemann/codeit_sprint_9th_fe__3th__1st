@@ -5,10 +5,11 @@ import { useTabsContext, useTabsListContext } from './TabsContext';
 
 interface ITabsButtonProps {
   value?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
-const TabsButton = ({ value, children }: ITabsButtonProps) => {
+const TabsButton = ({ value, className, children }: ITabsButtonProps) => {
   useTabsListContext();
   const { toggleTabs } = useTabsContext();
 
@@ -16,7 +17,11 @@ const TabsButton = ({ value, children }: ITabsButtonProps) => {
     toggleTabs(value);
   };
 
-  return <button onClick={handleToggleTabs}>{children}</button>;
+  return (
+    <button className={className} onClick={handleToggleTabs}>
+      {children}
+    </button>
+  );
 };
 
 export default TabsButton;
