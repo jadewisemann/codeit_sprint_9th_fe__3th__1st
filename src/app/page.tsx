@@ -10,9 +10,11 @@ export default function Home() {
     setValue(e.target.value);
   };
 
+  const error = value.length < 1 ? '입력해주세요.' : '';
+
   return (
     <div>
-      <Input value={value} onChange={handleChange} />
+      <Input value={value} onChange={handleChange} placeholder='할 일의 제목을 적어주세요.' error={error} />
     </div>
   );
 }
