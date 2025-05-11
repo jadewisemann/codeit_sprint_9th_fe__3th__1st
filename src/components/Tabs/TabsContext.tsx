@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext } from 'react';
 
 interface ITabsContext {
@@ -17,4 +19,14 @@ export const useTabsContext = () => {
   }
 
   return ctx;
+};
+
+export const TabsListContext = createContext<object | null>(null);
+
+export const useTabsListContext = () => {
+  const ctx = useContext(TabsListContext);
+
+  if (!ctx) {
+    throw Error('<TabsButton>은 <TabsList>컴포넌트 내부에서만 사용해야합니다!');
+  }
 };
