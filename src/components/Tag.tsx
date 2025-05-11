@@ -1,16 +1,17 @@
 const KST_OFFSET = 9 * 60 * 60 * 1000; // 한국 시간(KST)
 
-const Tag = ({
-  variant,
-  registrationEnd,
-}: {
+interface TagProps {
   variant: 'small' | 'large';
   registrationEnd: string;
-}) => {
+  className?: string;
+}
+
+const Tag = ({ variant, registrationEnd, className }: TagProps) => {
   const classArray = [
     'flex h-[32px] w-[117px] items-center bg-[#EA580C] rounded-bl-[12px] justify-center  px-[10px] py-[4px]',
     variant === 'small' && '',
     variant === 'large' && 'rounded-tr-[22px]',
+    className,
   ];
   const tagClass = classArray.filter(Boolean).join(' ');
   const deadline = new Date(registrationEnd).getUTCHours();
