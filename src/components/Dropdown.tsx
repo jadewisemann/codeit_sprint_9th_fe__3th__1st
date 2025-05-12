@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import DropdownSelectItem from './DropdownSelectItem';
+import DropdownItem from './DropdownItem';
 
-interface DropdownSelectProps {
+interface DropdownProps {
   initialValue: string;
   items: { id: number; value: string }[];
 }
 
-const DropdownSelect = ({ initialValue, items }: DropdownSelectProps) => {
+const Dropdown = ({ initialValue, items }: DropdownProps) => {
   const [dropdownValue, setDropdownValue] = useState(initialValue);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -16,7 +16,7 @@ const DropdownSelect = ({ initialValue, items }: DropdownSelectProps) => {
     setIsOpen((prev) => !prev);
   };
 
-  const onSelectItem = (value: string) => {
+  const onClickItem = (value: string) => {
     setDropdownValue(value);
     setIsOpen(false);
   };
@@ -27,13 +27,13 @@ const DropdownSelect = ({ initialValue, items }: DropdownSelectProps) => {
       {isOpen && (
         <div>
           {items.map((item) => (
-            <DropdownSelectItem
+            <DropdownItem
               key={item.id}
               value={item.value}
-              onSelectItem={onSelectItem}
+              onClick={onClickItem}
             >
               {item.value}
-            </DropdownSelectItem>
+            </DropdownItem>
           ))}
         </div>
       )}
@@ -41,4 +41,4 @@ const DropdownSelect = ({ initialValue, items }: DropdownSelectProps) => {
   );
 };
 
-export default DropdownSelect;
+export default Dropdown;
