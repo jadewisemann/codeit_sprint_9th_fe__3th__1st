@@ -12,13 +12,13 @@ interface IPaginationProps {
 }
 
 const Pagination = ({
-  startPage,
+  startPage = 1,
   totalPage,
-  defaultPage,
+  defaultPage = 1,
   queryString = 'page',
   children,
 }: IPaginationProps) => {
-  const [page, setPage] = useState(defaultPage || 1);
+  const [page, setPage] = useState(defaultPage);
 
   const changePage = (page: number) => {
     setPage(page);
