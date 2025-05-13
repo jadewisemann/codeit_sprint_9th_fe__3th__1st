@@ -1,30 +1,58 @@
-const KST_OFFSET = 9 * 60 * 60 * 1000; // 한국 시간(KST)
+'use client';
+
+import { PropsWithChildren, useState } from 'react';
+import Image from 'next/image';
 
 interface TagProps {
-  variant: 'small' | 'large';
-  registrationEnd: string;
+  variant?: 'sm' | 'md' | 'lg';
+  isRemovable?: boolean;
   className?: string;
 }
 
-const Tag = ({ variant, registrationEnd, className }: TagProps) => {
+const Tag = ({
+  variant = 'md',
+  isRemovable = false,
+  className,
+  children,
+}: PropsWithChildren<TagProps>) => {
+  const [isRemoved, setIsRemoved] = useState(false);
+
+  const handleRemoveTag = () => {
+    setIsRemoved(true);
+  };
+
   const classArray = [
-    'flex h-[32px] w-[117px] items-center bg-[#EA580C] rounded-bl-[12px] justify-center  px-[10px] py-[4px]',
-    variant === 'small' && '',
-    variant === 'large' && 'rounded-tr-[22px]',
+    // default
+    'px-3 py-1 rounded-md inline-flex justify-center align-center',
+
+    // size variant
+    variant === 'sm' && 'text-sm',
+    variant === 'md' && 'text-base',
+    variant === 'lg' && 'text-lg',
+
     className,
   ];
-  const tagClass = classArray.filter(Boolean).join(' ');
-  const deadline = new Date(registrationEnd).getUTCHours();
 
-  if (Date.now() + KST_OFFSET > new Date(registrationEnd).getTime()) return;
+  const tagClasses = classArray.join(' ');
 
   return (
-    <div className={tagClass}>
-      <span className='space-x-[4px] text-[12px] leading-[16px] font-semibold text-white'>
-        <span>⏰</span>
-        <span>{`오늘 ${deadline}시 마감`}</span>
-      </span>
-    </div>
+    <>
+      {!isRemoved && (
+        <span className={tagClasses}>
+          <label>{children}</label>
+          {isRemovable && (
+            <button className='ml-1 cursor-pointer' onClick={handleRemoveTag}>
+              <Image
+                src='/assets/ico__X.svg'
+                alt='remove btn'
+                width={12}
+                height={12}
+              />
+            </button>
+          )}
+        </span>
+      )}
+    </>
   );
 };
 
