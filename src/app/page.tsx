@@ -3,31 +3,35 @@
 import { useState } from 'react';
 import Input from './components/Input';
 
-export default function Home() {
+const Home = () => {
   const [value, setValue] = useState<string>('');
-  const [touched, setTouched] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setValue(e.target.value);
   };
 
-  const handleBlur = () => {
-    setTouched(true);
-  };
-
-  const errorMessage = touched && !value ? '입력해주세요' : '';
+  const festivalOptions = [
+    { label: '서울재즈페스티벌', value: 'seoul_jazz' },
+    { label: '월드디제이페스티벌', value: 'world_dj' },
+    { label: '그린플러그드', value: 'greenplugged' },
+  ];
 
   return (
     <div>
       <Input
-        id='username'
-        label='이름'
+        label='페스티벌 선택'
+        id='festival'
+        name='festival'
+        useSelect
         value={value}
         onChange={handleChange}
-        placeholder="이름을 입력해 주세요."
-        onBlur={handleBlur}
-        error={errorMessage}
+        options={festivalOptions}
+        defaultOptionLabel='페스티벌을 선택해 주세요'
       />
     </div>
   );
-}
+};
+
+export default Home;
