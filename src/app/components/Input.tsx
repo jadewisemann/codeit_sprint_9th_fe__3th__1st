@@ -18,6 +18,8 @@ interface InputProps {
   useSelect?: boolean;
   options?: { label: string; value: string }[];
   defaultOptionLabel?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const Input = ({
@@ -34,6 +36,8 @@ const Input = ({
   useSelect = false,
   options = [],
   defaultOptionLabel = '선택해주세요',
+  disabled,
+  readOnly,
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const inputType = isPassword ? (show ? 'text' : 'password') : type;
@@ -71,6 +75,7 @@ const Input = ({
             className={inputClass}
             name={name}
             id={id}
+            disabled={disabled}
           >
             <option value=''>{defaultOptionLabel}</option>
             {options?.map(renderOption)}
@@ -90,6 +95,8 @@ const Input = ({
             type={inputType}
             onBlur={onBlur}
             className={inputClass}
+            disabled={disabled}
+            readOnly={readOnly}
           />
           {isPassword && (
             <button
