@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { ChevronDown, Eye, EyeOff } from 'lucide-react';
 
@@ -40,19 +40,20 @@ const Input = ({
   readOnly,
 }: InputProps) => {
   const [show, setShow] = useState(false);
+  const [touched, setTouched] = useState(false);
   const inputType = isPassword ? (show ? 'text' : 'password') : type;
 
-  const isUnselected = useSelect && value === '';
+  const isUnselected = useSelect && touched && value === '';
 
   const inputClass = clsx(
     'w-full rounded-xl px-4 py-2',
     useSelect && 'appearance-none pr-10',
     isPassword && 'pr-10',
     error
-      ? 'border border-red-500 focus:border-red-500 focus:ring-red-500 focus:outline-red-500'
+      ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
-        ? 'border border-orange-400 focus:border-orange-400 focus:ring-orange-400 focus:outline-orange-400'
-        : 'border border-gray-300  focus:border-black focus:ring-black focus:outline-black'
+        ? 'border border-orange-400 focus:outline-orange-400'
+        : 'border border-gray-300 focus:outline-black'
   );
 
   const renderOption = (option: { label: string; value: string }) => (
@@ -60,6 +61,11 @@ const Input = ({
       {option.label}
     </option>
   );
+
+  const handleBlur = () => {
+    setTouched(true);
+    onBlur?.();
+  };
 
   return (
     <div>
@@ -77,6 +83,7 @@ const Input = ({
           <select
             value={value}
             onChange={onChange}
+            onBlur={handleBlur}
             className={inputClass}
             name={name}
             id={id}
