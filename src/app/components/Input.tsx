@@ -14,7 +14,6 @@ interface InputProps {
   label?: string;
   id?: string;
   name?: string;
-  isPassword?: boolean;
   useSelect?: boolean;
   options?: { label: string; value: string }[];
   defaultOptionLabel?: string;
@@ -33,7 +32,6 @@ const Input = ({
   label,
   id,
   name,
-  isPassword = false,
   useSelect = false,
   options = [],
   defaultOptionLabel = '선택해주세요',
@@ -43,14 +41,16 @@ const Input = ({
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const [touched, setTouched] = useState(false);
-  const inputType = isPassword ? (show ? 'text' : 'password') : type;
+
+  const isPasswordType = type === 'password';
+  const inputType = isPasswordType && show ? 'text' : type;
 
   const isUnselected = useSelect && touched && value === '';
 
   const inputClass = clsx(
     'w-full rounded-xl px-4 py-2',
     useSelect && 'appearance-none pr-10',
-    isPassword && 'pr-10',
+    isPasswordType && 'pr-10',
     error
       ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
@@ -58,7 +58,7 @@ const Input = ({
         : 'border border-gray-300 focus:outline-gray-800'
   );
 
-  const chevronDownColorClass = clsx(
+  const chevronClass = clsx(
     'pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transition-colors',
     isUnselected
       ? 'text-orange-400'
@@ -80,7 +80,7 @@ const Input = ({
     autoComplete
     ?? (type === 'email'
       ? 'email'
-      : type === 'password' && isPassword
+      : isPasswordType
         ? 'current-password'
         : type === 'new-password'
           ? 'new-password'
@@ -112,7 +112,7 @@ const Input = ({
             <option value=''>{defaultOptionLabel}</option>
             {options?.map(renderOption)}
           </select>
-          <div className={chevronDownColorClass} aria-hidden='true'>
+          <div className={chevronClass} aria-hidden='true'>
             <ChevronDown size={20} />
           </div>
         </div>
@@ -133,7 +133,7 @@ const Input = ({
             aria-describedby={error ? `${id}-error` : undefined}
             autoComplete={autoCompleteValue}
           />
-          {isPassword && (
+          {isPasswordType && (
             <button
               type='button'
               onClick={() => setShow(!show)}
