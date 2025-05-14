@@ -99,12 +99,22 @@ const Input = ({
   const rightPadding =
     isSelectType || isPasswordType ? sizeMap.inputPaddingRight : '';
 
+  const shouldShowError = (): boolean => {
+    if (!touched) return false;
+    if (error?.required && !value) return true;
+    if (error?.minLength && value.length < error.minLength) return true;
+    if (error?.pattern && !error.pattern.test(value)) return true;
+    return false;
+  };
+
+  const showError = shouldShowError();
+
   const inputClass = clsx(
     baseInput,
     sizeMap.input,
     rightPadding,
     isSelectType && 'appearance-none',
-    touched && error?.required && !value
+    showError
       ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
         ? 'border border-orange-400 focus:outline-orange-400'
@@ -133,29 +143,19 @@ const Input = ({
 
   if (!autoCompleteValue) {
     switch (type) {
-    case 'email':
-      autoCompleteValue = 'email';
-      break;
-    case 'password':
-      autoCompleteValue = 'current-password';
-      break;
-    case 'new-password':
-      autoCompleteValue = 'new-password';
-      break;
-    default:
-      autoCompleteValue = 'off';
+      case 'email':
+        autoCompleteValue = 'email';
+        break;
+      case 'password':
+        autoCompleteValue = 'current-password';
+        break;
+      case 'new-password':
+        autoCompleteValue = 'new-password';
+        break;
+      default:
+        autoCompleteValue = 'off';
     }
   }
-
-  const shouldShowError = (): boolean => {
-    if (!touched) return false;
-    if (error?.required && !value) return true;
-    if (error?.minLength && value.length < error.minLength) return true;
-    if (error?.pattern && !error.pattern.test(value)) return true;
-    return false;
-  };
-
-  const showError = shouldShowError();
 
   const getErrorMessage = () => {
     if (error?.validateMessage) return error.validateMessage;
