@@ -20,6 +20,7 @@ interface InputProps {
   defaultOptionLabel?: string;
   disabled?: boolean;
   readOnly?: boolean;
+  autoComplete?: string;
 }
 
 const Input = ({
@@ -38,6 +39,7 @@ const Input = ({
   defaultOptionLabel = '선택해주세요',
   disabled,
   readOnly,
+  autoComplete,
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -73,6 +75,16 @@ const Input = ({
     setTouched(true);
     onBlur?.();
   };
+
+  const autoCompleteValue =
+    autoComplete
+    ?? (type === 'email'
+      ? 'email'
+      : type === 'password' && isPassword
+        ? 'current-password'
+        : type === 'new-password'
+          ? 'new-password'
+          : 'off');
 
   return (
     <div>
@@ -119,6 +131,7 @@ const Input = ({
             readOnly={readOnly}
             aria-invalid={!!error}
             aria-describedby={error ? `${id}-error` : undefined}
+            autoComplete={autoCompleteValue}
           />
           {isPassword && (
             <button
