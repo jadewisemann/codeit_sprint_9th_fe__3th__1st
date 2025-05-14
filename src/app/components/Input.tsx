@@ -10,13 +10,20 @@ export type InputType =
   | 'tel'
   | 'select';
 
+interface ValidationType {
+  required?: boolean;
+  minLength?: number;
+  pattern?: RegExp;
+  validateMessage?: string;
+}
+
 interface InputProps {
   value: string;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
   placeholder?: string;
-  type?: string;
+  type?: InputType;
   onBlur?: () => void;
   label?: string;
   id?: string;
@@ -26,10 +33,7 @@ interface InputProps {
   disabled?: boolean;
   readOnly?: boolean;
   autoComplete?: string;
-  required?: boolean;
-  minLength?: number;
-  pattern?: RegExp;
-  validateMessage?: string;
+  error?: ValidationType;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -48,10 +52,7 @@ const Input = ({
   disabled,
   readOnly,
   autoComplete,
-  required,
-  minLength,
-  pattern,
-  validateMessage,
+  error,
   size = 'md',
   className,
 }: InputProps) => {
@@ -103,7 +104,7 @@ const Input = ({
     sizeMap.input,
     rightPadding,
     isSelectType && 'appearance-none',
-    touched && required && !value
+    touched && error?.required && !value
       ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
         ? 'border border-orange-400 focus:outline-orange-400'
@@ -129,29 +130,37 @@ const Input = ({
     onBlur?.();
   };
 
-  const autoCompleteValue =
-    autoComplete
-    ?? (type === 'email'
-      ? 'email'
-      : isPasswordType
-        ? 'current-password'
-        : type === 'new-password'
-          ? 'new-password'
-          : 'off');
+  let autoCompleteValue = autoComplete;
+
+  if (!autoCompleteValue) {
+    switch (type) {
+    case 'email':
+      autoCompleteValue = 'email';
+      break;
+    case 'password':
+      autoCompleteValue = 'current-password';
+      break;
+    case 'new-password':
+      autoCompleteValue = 'new-password';
+      break;
+    default:
+      autoCompleteValue = 'off';
+    }
+  }
 
   const shouldShowError =
     touched
-    && ((required && !value)
-      || (minLength && value.length < minLength)
-      || (pattern && !pattern.test(value)));
+    && ((error?.required && !value)
+      || (error?.minLength && value.length < error?.minLength)
+      || (error?.pattern && !error?.pattern.test(value)));
 
   const errorMessage =
-    validateMessage
-    ?? (!value && required
+    error?.validateMessage
+    ?? (!value && error?.required
       ? `${label}을 입력하세요`
-      : minLength && value.length < minLength
-        ? `${minLength}자 이상 입력하세요`
-        : pattern && !pattern.test(value)
+      : error?.minLength && value.length < error?.minLength
+        ? `${error?.minLength}자 이상 입력하세요`
+        : error?.pattern && !error?.pattern.test(value)
           ? '형식이 올바르지 않습니다'
           : '');
 
