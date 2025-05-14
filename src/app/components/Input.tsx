@@ -20,6 +20,10 @@ interface InputProps {
   disabled?: boolean;
   readOnly?: boolean;
   autoComplete?: string;
+  required?: boolean;
+  minLength?: number;
+  pattern?: RegExp;
+  validateMessage?: string;
 }
 
 const Input = ({
@@ -38,6 +42,10 @@ const Input = ({
   disabled,
   readOnly,
   autoComplete,
+  required,
+  minLength,
+  pattern,
+  validateMessage,
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -86,6 +94,22 @@ const Input = ({
           ? 'new-password'
           : 'off');
 
+  const shouldShowError =
+    touched
+    && ((required && !value)
+      || (minLength && value.length < minLength)
+      || (pattern && !pattern.test(value)));
+
+  const errorMessage =
+    validateMessage
+    ?? (!value && required
+      ? `${label}을 입력하세요`
+      : minLength && value.length < minLength
+        ? `${minLength}자 이상 입력하세요`
+        : pattern && !pattern.test(value)
+          ? '형식이 올바르지 않습니다'
+          : '');
+
   return (
     <div>
       {label && (
@@ -125,7 +149,7 @@ const Input = ({
             onChange={onChange}
             placeholder={placeholder}
             type={inputType}
-            onBlur={onBlur}
+            onBlur={handleBlur}
             className={inputClass}
             disabled={disabled}
             readOnly={readOnly}
@@ -145,9 +169,9 @@ const Input = ({
           )}
         </div>
       )}
-      {error && (
+      {shouldShowError && (
         <p id={`${id}-error`} className='mt-1 text-sm text-red-500'>
-          {error}
+          {errorMessage}
         </p>
       )}
     </div>
