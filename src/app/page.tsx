@@ -4,67 +4,59 @@ import { useState } from 'react';
 import Input from './components/Input';
 
 const Home = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
+  const [value, setValue] = useState('');
 
-  const handleEmailChange = (
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setEmail(e.target.value);
+    setValue(e.target.value);
   };
-
-  const handlePasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setPassword(e.target.value);
-  };
-
-  const handlePhoneChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setPhone(e.target.value);
-  };
-
   return (
-    <div>
+    <div className='mx-auto mt-10 max-w-xl space-y-6'>
+      <h1 className='mb-4 text-2xl font-bold'>🔍 Input Size 테스트</h1>
+
       <Input
-        id='email'
-        name='email'
-        label='이메일'
-        type='email'
-        value={email}
-        onChange={handleEmailChange}
-        placeholder='example@domain.com'
-        required
-        pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
-        validateMessage='올바른 이메일 형식을 입력해주세요'
+        label='sm'
+        id='sm'
+        name='sm'
+        value={value}
+        type='select'
+        onChange={handleChange}
+        placeholder='sm'
+        size='sm'
       />
 
       <Input
-        id='password'
-        name='password'
-        label='비밀번호'
+        label='md'
+        id='md'
+        name='md'
+        value={value}
+        type='select'
+        onChange={handleChange}
+        placeholder='md'
+        size='md'
+      />
+
+      <Input
+        label='lg'
+        id='lg'
+        name='lg'
+        value={value}
         type='password'
-        value={password}
-        onChange={handlePasswordChange}
-        placeholder='비밀번호를 입력하세요'
-        required
-        minLength={8}
-        pattern={/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/}
-        validateMessage='비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다'
+        onChange={handleChange}
+        placeholder='lg'
+        size='lg'
       />
 
       <Input
-        id='phone'
-        name='phone'
-        label='전화번호'
-        type='text'
-        value={phone}
-        onChange={handlePhoneChange}
-        placeholder='010-1234-5678'
-        pattern={/^010-\d{3,4}-\d{4}$/}
-        validateMessage='010-1234-5678 형식으로 입력해주세요'
+        label='xl'
+        id='xl'
+        name='xl'
+        value={value}
+        type='password'
+        onChange={handleChange}
+        placeholder='xl'
+        size='xl'
       />
     </div>
   );

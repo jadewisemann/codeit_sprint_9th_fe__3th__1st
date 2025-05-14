@@ -2,6 +2,14 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { ChevronDown, Eye, EyeOff } from 'lucide-react';
 
+export type InputType =
+  | 'text'
+  | 'email'
+  | 'password'
+  | 'new-password'
+  | 'tel'
+  | 'select';
+
 interface InputProps {
   value: string;
   onChange: (
@@ -9,12 +17,10 @@ interface InputProps {
   ) => void;
   placeholder?: string;
   type?: string;
-  error?: string;
   onBlur?: () => void;
   label?: string;
   id?: string;
   name?: string;
-  useSelect?: boolean;
   options?: { label: string; value: string }[];
   defaultOptionLabel?: string;
   disabled?: boolean;
@@ -24,6 +30,7 @@ interface InputProps {
   minLength?: number;
   pattern?: RegExp;
   validateMessage?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const Input = ({
@@ -31,12 +38,10 @@ const Input = ({
   onChange,
   placeholder = '',
   type = 'text',
-  error,
   onBlur,
   label,
   id,
   name,
-  useSelect = false,
   options = [],
   defaultOptionLabel = '선택해주세요',
   disabled,
@@ -46,20 +51,57 @@ const Input = ({
   minLength,
   pattern,
   validateMessage,
+  size = 'md',
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const isPasswordType = type === 'password';
+  const isSelectType = type === 'select';
+  const isPasswordType = type === 'password' || type === 'new-password';
   const inputType = isPasswordType && show ? 'text' : type;
+  const isUnselected = isSelectType && touched && value === '';
 
-  const isUnselected = useSelect && touched && value === '';
+  const sizeMap = {
+    sm: {
+      input: 'text-sm py-1.5 px-3',
+      label: 'text-sm',
+      icon: 'right-3',
+      iconSize: 16,
+      inputPaddingRight: 'pr-8',
+    },
+    md: {
+      input: 'text-md py-2 px-4',
+      label: 'text-md',
+      icon: 'right-3',
+      iconSize: 18,
+      inputPaddingRight: 'pr-9',
+    },
+    lg: {
+      input: 'text-lg py-3 px-5',
+      label: 'text-lg',
+      icon: 'right-4',
+      iconSize: 20,
+      inputPaddingRight: 'pr-10',
+    },
+    xl: {
+      input: 'text-xl py-4 px-6 pr-12',
+      label: 'text-xl',
+      icon: 'right-4',
+      iconSize: 24,
+      inputPaddingRight: 'pr-12',
+    },
+  }[size];
+
+  const baseInput = 'w-full rounded-xl';
+  const rightPadding =
+    isSelectType || isPasswordType ? sizeMap.inputPaddingRight : '';
 
   const inputClass = clsx(
-    'w-full rounded-xl px-4 py-2',
-    useSelect && 'appearance-none pr-10',
-    isPasswordType && 'pr-10',
-    error
+    baseInput,
+    sizeMap.input,
+    rightPadding,
+    isSelectType && 'appearance-none',
+    touched && required && !value
       ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
         ? 'border border-orange-400 focus:outline-orange-400'
@@ -68,6 +110,7 @@ const Input = ({
 
   const chevronClass = clsx(
     'pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transition-colors',
+    sizeMap.icon,
     isUnselected
       ? 'text-orange-400'
       : 'text-gray-300 group-focus-within:text-gray-800'
@@ -116,12 +159,15 @@ const Input = ({
         <label
           id={`${id}-label`}
           htmlFor={id}
-          className='mb-2 block text-lg font-bold text-gray-800'
+          className={clsx(
+            'mb-2 block text-lg font-bold text-gray-800',
+            sizeMap.label
+          )}
         >
           {label}
         </label>
       )}
-      {useSelect ? (
+      {isSelectType ? (
         <div className='group relative'>
           <select
             value={value}
@@ -137,7 +183,7 @@ const Input = ({
             {options?.map(renderOption)}
           </select>
           <div className={chevronClass} aria-hidden='true'>
-            <ChevronDown size={20} />
+            <ChevronDown size={sizeMap.iconSize} />
           </div>
         </div>
       ) : (
@@ -153,8 +199,8 @@ const Input = ({
             className={inputClass}
             disabled={disabled}
             readOnly={readOnly}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${id}-error` : undefined}
+            aria-invalid={shouldShowError}
+            aria-describedby={shouldShowError ? `${id}-error` : undefined}
             autoComplete={autoCompleteValue}
           />
           {isPasswordType && (
@@ -162,9 +208,16 @@ const Input = ({
               type='button'
               onClick={() => setShow(!show)}
               aria-label={show ? '비밀번호 숨기기' : '비밀번호 보기'}
-              className='absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'
+              className={clsx(
+                'absolute top-1/2 -translate-y-1/2 text-gray-500',
+                sizeMap.icon
+              )}
             >
-              {show ? <EyeOff size={20} /> : <Eye size={20} />}
+              {show ? (
+                <EyeOff size={sizeMap.iconSize} />
+              ) : (
+                <Eye size={sizeMap.iconSize} />
+              )}
             </button>
           )}
         </div>
