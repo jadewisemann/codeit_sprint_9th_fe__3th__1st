@@ -31,6 +31,7 @@ interface InputProps {
   pattern?: RegExp;
   validateMessage?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
 }
 
 const Input = ({
@@ -52,6 +53,7 @@ const Input = ({
   pattern,
   validateMessage,
   size = 'md',
+  className,
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -154,7 +156,7 @@ const Input = ({
           : '');
 
   return (
-    <div>
+    <div className={className}>
       {label && (
         <label
           id={`${id}-label`}
