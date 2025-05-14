@@ -4,59 +4,32 @@ import { useState } from 'react';
 import Input from './components/Input';
 
 const Home = () => {
-  const [value, setValue] = useState('');
+  const [festival, setFestival] = useState('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setValue(e.target.value);
+    setFestival(e.target.value);
   };
+
+  const festivalOptions = [
+    { label: '서울재즈페스티벌', value: 'seoul-jazz' },
+    { label: '월드디제이페스티벌', value: 'world-dj' },
+    { label: '그린플러그드', value: 'greenplugged' },
+  ];
+
   return (
-    <div className='mx-auto mt-10 max-w-xl space-y-6'>
-      <h1 className='mb-4 text-2xl font-bold'>🔍 Input Size 테스트</h1>
-
+    <div className='space-y-6 rounded-lg bg-gray-50 p-6 shadow-md'>
       <Input
-        label='sm'
-        id='sm'
-        name='sm'
-        value={value}
+        label='참여할 페스티벌'
+        id='festival'
+        name='festival'
         type='select'
+        value={festival}
         onChange={handleChange}
-        placeholder='sm'
-        size='sm'
-      />
-
-      <Input
-        label='md'
-        id='md'
-        name='md'
-        value={value}
-        type='select'
-        onChange={handleChange}
-        placeholder='md'
+        options={festivalOptions}
+        defaultOptionLabel='페스티벌을 선택해주세요'
         size='md'
-      />
-
-      <Input
-        label='lg'
-        id='lg'
-        name='lg'
-        value={value}
-        type='password'
-        onChange={handleChange}
-        placeholder='lg'
-        size='lg'
-      />
-
-      <Input
-        label='xl'
-        id='xl'
-        name='xl'
-        value={value}
-        type='password'
-        onChange={handleChange}
-        placeholder='xl'
-        size='xl'
       />
     </div>
   );

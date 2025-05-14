@@ -74,7 +74,6 @@ const Input = ({
   onChange,
   placeholder = '',
   type = 'text',
-  onBlur,
   label,
   id,
   name,
@@ -128,7 +127,6 @@ const Input = ({
 
   const handleBlur = () => {
     if (!touched) setTouched(true);
-    onBlur?.();
   };
 
   let autoCompleteValue = autoComplete;
