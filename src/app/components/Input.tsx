@@ -42,13 +42,17 @@ const Input = ({
   const [show, setShow] = useState(false);
   const inputType = isPassword ? (show ? 'text' : 'password') : type;
 
+  const isUnselected = useSelect && value === '';
+
   const inputClass = clsx(
     'w-full rounded-xl px-4 py-2',
     useSelect && 'appearance-none pr-10',
     isPassword && 'pr-10',
     error
       ? 'border border-red-500 focus:border-red-500 focus:ring-red-500 focus:outline-red-500'
-      : 'border border-gray-300  focus:border-black focus:ring-black focus:outline-black'
+      : isUnselected
+        ? 'border border-orange-400 focus:border-orange-400 focus:ring-orange-400 focus:outline-orange-400'
+        : 'border border-gray-300  focus:border-black focus:ring-black focus:outline-black'
   );
 
   const renderOption = (option: { label: string; value: string }) => (
@@ -61,6 +65,7 @@ const Input = ({
     <div>
       {label && (
         <label
+          id={`${id}-label`}
           htmlFor={id}
           className='mb-2 block text-lg font-bold text-gray-700'
         >
@@ -76,11 +81,15 @@ const Input = ({
             name={name}
             id={id}
             disabled={disabled}
+            aria-labelledby={label ? `${id}-label` : undefined}
           >
             <option value=''>{defaultOptionLabel}</option>
             {options?.map(renderOption)}
           </select>
-          <div className='pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'>
+          <div
+            className='pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'
+            aria-hidden='true'
+          >
             <ChevronDown size={20} />
           </div>
         </div>
@@ -97,6 +106,8 @@ const Input = ({
             className={inputClass}
             disabled={disabled}
             readOnly={readOnly}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
           />
           {isPassword && (
             <button
@@ -110,7 +121,11 @@ const Input = ({
           )}
         </div>
       )}
-      {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
+      {error && (
+        <p id={`${id}-error`} className='mt-1 text-sm text-red-500'>
+          {error}
+        </p>
+      )}
     </div>
   );
 };
