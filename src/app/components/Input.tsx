@@ -38,6 +38,37 @@ interface InputProps {
   className?: string;
 }
 
+const SIZE_MAP = {
+  sm: {
+    input: 'text-sm py-1.5 px-3',
+    label: 'text-sm',
+    icon: 'right-3',
+    iconSize: 16,
+    inputPaddingRight: 'pr-8',
+  },
+  md: {
+    input: 'text-md py-2 px-4',
+    label: 'text-md',
+    icon: 'right-3',
+    iconSize: 18,
+    inputPaddingRight: 'pr-9',
+  },
+  lg: {
+    input: 'text-lg py-3 px-5',
+    label: 'text-lg',
+    icon: 'right-4',
+    iconSize: 20,
+    inputPaddingRight: 'pr-10',
+  },
+  xl: {
+    input: 'text-xl py-4 px-6 pr-12',
+    label: 'text-xl',
+    icon: 'right-4',
+    iconSize: 24,
+    inputPaddingRight: 'pr-12',
+  },
+} as const;
+
 const Input = ({
   value,
   onChange,
@@ -64,40 +95,11 @@ const Input = ({
   const inputType = isPasswordType && show ? 'text' : type;
   const isUnselected = isSelectType && touched && value === '';
 
-  const sizeMap = {
-    sm: {
-      input: 'text-sm py-1.5 px-3',
-      label: 'text-sm',
-      icon: 'right-3',
-      iconSize: 16,
-      inputPaddingRight: 'pr-8',
-    },
-    md: {
-      input: 'text-md py-2 px-4',
-      label: 'text-md',
-      icon: 'right-3',
-      iconSize: 18,
-      inputPaddingRight: 'pr-9',
-    },
-    lg: {
-      input: 'text-lg py-3 px-5',
-      label: 'text-lg',
-      icon: 'right-4',
-      iconSize: 20,
-      inputPaddingRight: 'pr-10',
-    },
-    xl: {
-      input: 'text-xl py-4 px-6 pr-12',
-      label: 'text-xl',
-      icon: 'right-4',
-      iconSize: 24,
-      inputPaddingRight: 'pr-12',
-    },
-  }[size];
-
   const baseInput = 'w-full rounded-xl';
   const rightPadding =
     isSelectType || isPasswordType ? sizeMap.inputPaddingRight : '';
+
+  const sizeMap = SIZE_MAP[size];
 
   const inputClass = clsx(
     baseInput,
@@ -126,7 +128,7 @@ const Input = ({
   );
 
   const handleBlur = () => {
-    setTouched(true);
+    if (!touched) setTouched(true);
     onBlur?.();
   };
 
@@ -148,21 +150,27 @@ const Input = ({
     }
   }
 
-  const shouldShowError =
-    touched
-    && ((error?.required && !value)
-      || (error?.minLength && value.length < error?.minLength)
-      || (error?.pattern && !error?.pattern.test(value)));
+  const shouldShowError = (): boolean => {
+    if (!touched) return false;
+    if (error?.required && !value) return true;
+    if (error?.minLength && value.length < error.minLength) return true;
+    if (error?.pattern && !error.pattern.test(value)) return true;
+    return false;
+  };
 
-  const errorMessage =
-    error?.validateMessage
-    ?? (!value && error?.required
-      ? `${label}을 입력하세요`
-      : error?.minLength && value.length < error?.minLength
-        ? `${error?.minLength}자 이상 입력하세요`
-        : error?.pattern && !error?.pattern.test(value)
-          ? '형식이 올바르지 않습니다'
-          : '');
+  const showError = shouldShowError();
+
+  const getErrorMessage = () => {
+    if (error?.validateMessage) return error.validateMessage;
+    if (!value && error?.required) return `${label}을 입력하세요`;
+    if (error?.minLength && value.length < error.minLength)
+      return `${error.minLength}자 이상 입력하세요`;
+    if (error?.pattern && !error.pattern.test(value))
+      return '형식이 올바르지 않습니다';
+    return '';
+  };
+
+  const errorMessage = showError ? getErrorMessage() : '';
 
   return (
     <div className={className}>
@@ -210,8 +218,8 @@ const Input = ({
             className={inputClass}
             disabled={disabled}
             readOnly={readOnly}
-            aria-invalid={shouldShowError}
-            aria-describedby={shouldShowError ? `${id}-error` : undefined}
+            aria-invalid={showError}
+            aria-describedby={showError ? `${id}-error` : undefined}
             autoComplete={autoCompleteValue}
           />
           {isPasswordType && (
@@ -233,7 +241,7 @@ const Input = ({
           )}
         </div>
       )}
-      {shouldShowError && (
+      {showError && (
         <p id={`${id}-error`} className='mt-1 text-sm text-red-500'>
           {errorMessage}
         </p>
