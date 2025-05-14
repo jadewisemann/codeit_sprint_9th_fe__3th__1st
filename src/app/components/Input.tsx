@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { ChevronDown, Eye, EyeOff } from 'lucide-react';
 
@@ -53,7 +53,14 @@ const Input = ({
       ? 'border border-red-500 focus:outline-red-500'
       : isUnselected
         ? 'border border-orange-400 focus:outline-orange-400'
-        : 'border border-gray-300 focus:outline-black'
+        : 'border border-gray-300 focus:outline-gray-800'
+  );
+
+  const chevronDownColorClass = clsx(
+    'pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transition-colors',
+    isUnselected
+      ? 'text-orange-400'
+      : 'text-gray-300 group-focus-within:text-gray-800'
   );
 
   const renderOption = (option: { label: string; value: string }) => (
@@ -73,13 +80,13 @@ const Input = ({
         <label
           id={`${id}-label`}
           htmlFor={id}
-          className='mb-2 block text-lg font-bold text-gray-700'
+          className='mb-2 block text-lg font-bold text-gray-800'
         >
           {label}
         </label>
       )}
       {useSelect ? (
-        <div className='relative'>
+        <div className='group relative'>
           <select
             value={value}
             onChange={onChange}
@@ -93,10 +100,7 @@ const Input = ({
             <option value=''>{defaultOptionLabel}</option>
             {options?.map(renderOption)}
           </select>
-          <div
-            className='pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'
-            aria-hidden='true'
-          >
+          <div className={chevronDownColorClass} aria-hidden='true'>
             <ChevronDown size={20} />
           </div>
         </div>
