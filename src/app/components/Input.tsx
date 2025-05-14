@@ -94,12 +94,11 @@ const Input = ({
   const isPasswordType = type === 'password' || type === 'new-password';
   const inputType = isPasswordType && show ? 'text' : type;
   const isUnselected = isSelectType && touched && value === '';
+  const sizeMap = SIZE_MAP[size];
 
   const baseInput = 'w-full rounded-xl';
   const rightPadding =
     isSelectType || isPasswordType ? sizeMap.inputPaddingRight : '';
-
-  const sizeMap = SIZE_MAP[size];
 
   const inputClass = clsx(
     baseInput,
