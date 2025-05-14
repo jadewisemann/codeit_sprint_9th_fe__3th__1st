@@ -41,7 +41,11 @@ const Tag = ({
         <span className={tagClasses}>
           <label>{children}</label>
           {isRemovable && (
-            <button className='ml-1 cursor-pointer' onClick={handleRemoveTag}>
+            <button
+              className='ml-1 cursor-pointer'
+              aria-label='remove-button'
+              onClick={handleRemoveTag}
+            >
               <Image
                 src='/assets/ico__X.svg'
                 alt='remove btn'
